@@ -40,7 +40,7 @@ sudo apt install -y curl build-essential git jq
 # Check if Go is installed
 if ! command -v go &> /dev/null; then
   echo "Go is not installed. Installing Go version 1.23.0..."
-  GO_VERSION="1.23.0"
+  GO_VERSION="1.23.2"
   wget "https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz"
   sudo rm -rf /usr/local/go
   sudo tar -C /usr/local -xzf "go${GO_VERSION}.linux-amd64.tar.gz"
