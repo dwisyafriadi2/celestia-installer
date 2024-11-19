@@ -29,7 +29,6 @@ print_banner() {
 # Call the print_banner function
 print_banner
 
-
 # Update the package list
 echo "===================================================="
 echo ""
@@ -85,17 +84,21 @@ sudo chown 10001:10001 $HOME/celestia-node
 
 # Initialize the node store and key
 echo "===================================================="
-  echo ""
+echo ""
 echo "Initializing the node store and key..."
 echo "===================================================="
-  echo ""
+echo ""
 docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
   -v $HOME/celestia-node:/home/celestia \
   ghcr.io/celestiaorg/celestia-node:v0.17.2 \
   celestia light init --p2p.network $NETWORK
 
 # Start the node
+echo "===================================================="
+echo ""
 echo "Starting the Celestia Light Node..."
+echo "===================================================="
+echo ""
 docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
   -v $HOME/celestia-node:/home/celestia \
   ghcr.io/celestiaorg/celestia-node:v0.17.2 \
