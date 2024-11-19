@@ -75,6 +75,18 @@ sudo mkdir -p $CEL_DIR
 sudo chown -R $USER:$USER $NODE_DIR
 sudo chown -R $USER:$USER $CEL_DIR
 
+# Create the celestia-node-data directory as per the documentation
+echo "===================================================="
+echo "Creating celestia-node-data directory..."
+echo "===================================================="
+mkdir -p $HOME/celestia-node-data
+
+# Set the ownership of the created directory
+echo "===================================================="
+echo "Setting ownership of celestia-node-data directory..."
+echo "===================================================="
+sudo chown 10001:10001 $HOME/celestia-node-data
+
 # Initialize the node store and key
 echo "===================================================="
 echo "Initializing the node store and key..."
