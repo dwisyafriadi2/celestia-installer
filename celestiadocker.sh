@@ -46,7 +46,7 @@ echo ""
 sudo apt install -y curl build-essential git jq
 
 # Check if Docker is installed
-if ! command -v docker &> /dev/null; then
+if ! command -v sudo docker &> /dev/null; then
   echo "===================================================="
   echo ""
   echo "Docker not found. Installing Docker..."
