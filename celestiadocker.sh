@@ -55,28 +55,32 @@ export NETWORK=celestia
 export NODE_TYPE=light
 export RPC_URL=rpc.celestia.pops.one
 
-# Create directory based on the user
+# Set the appropriate directory based on whether it's root or a user
 echo "===================================================="
 echo "Creating Celestia node directory..."
 echo "===================================================="
 if [ "$(id -u)" -eq 0 ]; then
   # If running as root, use /root
   NODE_DIR="/root/celestia-node"
+  CEL_DIR="/root/celestia"
 else
   # If running as a regular user, use /home/<user>
   NODE_DIR="/home/$USER/celestia-node"
+  CEL_DIR="/home/$USER/celestia"
 fi
 
-# Create the directory and set the appropriate ownership
+# Create the directories and set the correct ownership
 sudo mkdir -p $NODE_DIR
-sudo chown $USER:$USER $NODE_DIR
+sudo mkdir -p $CEL_DIR
+sudo chown -R $USER:$USER $NODE_DIR
+sudo chown -R $USER:$USER $CEL_DIR
 
 # Initialize the node store and key
 echo "===================================================="
 echo "Initializing the node store and key..."
 echo "===================================================="
 sudo docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
-  -v $NODE_DIR:/home/celestia \
+  -v $CEL_DIR:/home/celestia \
   ghcr.io/celestiaorg/celestia-node:v0.17.2 \
   celestia light init --p2p.network $NETWORK
 
@@ -85,7 +89,7 @@ echo "===================================================="
 echo "Starting Celestia Light Node..."
 echo "===================================================="
 sudo docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
-  -v $NODE_DIR:/home/celestia \
+  -v $CEL_DIR:/home/celestia \
   ghcr.io/celestiaorg/celestia-node:v0.17.2 \
   celestia light start --core.ip $RPC_URL --p2p.network $NETWORK
 
