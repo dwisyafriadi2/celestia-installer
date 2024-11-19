@@ -46,7 +46,7 @@ echo ""
 sudo apt install -y curl build-essential git jq
 
 # Check if Docker is installed
-if ! command -v sudo -u docker &> /dev/null; then
+if ! command -v docker &> /dev/null; then
   echo "===================================================="
   echo ""
   echo "Docker not found. Installing Docker..."
@@ -90,7 +90,7 @@ echo ""
 echo "Initializing the node store and key..."
 echo "===================================================="
 echo ""
-docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
+sudo docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
   -v /home/celestia/celestia-node:/home/celestia \
   ghcr.io/celestiaorg/celestia-node:v0.17.2 \
   celestia light init --p2p.network $NETWORK
@@ -101,7 +101,7 @@ echo ""
 echo "Starting the Celestia Light Node..."
 echo "===================================================="
 echo ""
-docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
+sudo docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
   -v /home/celestia/celestia-node:/home/celestia \
   ghcr.io/celestiaorg/celestia-node:v0.17.2 \
   celestia light start --core.ip $RPC_URL --p2p.network $NETWORK
