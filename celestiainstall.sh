@@ -37,14 +37,19 @@ sudo apt update -y
 echo "Installing dependencies..."
 sudo apt install -y curl build-essential git jq
 
-# Install Go
-GO_VERSION="1.23.0"
-echo "Installing Go version $GO_VERSION..."
-wget "https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz"
-sudo rm -rf /usr/local/go
-sudo tar -C /usr/local -xzf "go${GO_VERSION}.linux-amd64.tar.gz"
-echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.bashrc
-source ~/.bashrc
+# Check if Go is installed
+if ! command -v go &> /dev/null; then
+  echo "Go is not installed. Installing Go version 1.23.0..."
+  GO_VERSION="1.23.0"
+  wget "https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz"
+  sudo rm -rf /usr/local/go
+  sudo tar -C /usr/local -xzf "go${GO_VERSION}.linux-amd64.tar.gz"
+  echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.bashrc
+  source ~/.bashrc
+  echo "Go version $GO_VERSION installed successfully."
+else
+  echo "Go is already installed. Skipping Go installation."
+fi
 
 # Verify Go installation
 go version
