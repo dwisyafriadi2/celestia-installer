@@ -37,7 +37,7 @@ sudo apt update -y
 echo "Installing dependencies..."
 sudo apt install -y curl build-essential git jq
 
-# Install Go (if not already installed)
+# Install Go
 GO_VERSION="1.23.0"
 echo "Installing Go version $GO_VERSION..."
 wget "https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz"
@@ -45,6 +45,9 @@ sudo rm -rf /usr/local/go
 sudo tar -C /usr/local -xzf "go${GO_VERSION}.linux-amd64.tar.gz"
 echo "export PATH=\$PATH:/usr/local/go/bin" >> ~/.bashrc
 source ~/.bashrc
+
+# Verify Go installation
+go version
 
 # Clone the Celestia Node repository
 echo "Cloning Celestia Node repository..."
@@ -56,39 +59,17 @@ cd celestia-node
 echo "Building Celestia binary..."
 make build
 
+# Verify Celestia installation
+celestia version
+
 # Initialize the light node
 echo "Initializing the light node..."
 celestia light init
 
-# Create a Systemd service file
-echo "Creating Systemd service file..."
-sudo tee /etc/systemd/system/celestia-lightd.service > /dev/null <<EOF
-[Unit]
-Description=Celestia Light Node
-After=network-online.target
-
-[Service]
-User=$USER
-ExecStart=$(which celestia) light start --core.ip rpc.celestia.pops.one --p2p.network celestia
-Restart=on-failure
-RestartSec=3
-LimitNOFILE=65535
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# Reload Systemd to recognize the new service
-echo "Reloading Systemd..."
-sudo systemctl daemon-reload
-
-# Enable and start the Celestia Light Node service
-echo "Enabling and starting Celestia Light Node service..."
-sudo systemctl enable celestia-lightd
-sudo systemctl start celestia-lightd
-
-# Check the status of the service
-echo "Checking the status of the Celestia Light Node service..."
-sudo systemctl status celestia-lightd
+# Start the light node with the specified gRPC endpoint
+GRPC_ENDPOINT="rpc.celestia.pops.one"
+P2P_NETWORK="celestia"
+echo "Starting the light node with gRPC endpoint $GRPC_ENDPOINT and p2p network $P2P_NETWORK..."
+celestia light start --core.ip $GRPC_ENDPOINT --p2p.network $P2P_NETWORK
 
 echo "Celestia Light Node installation and setup complete!"
