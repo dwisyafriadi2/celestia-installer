@@ -73,33 +73,27 @@ export NETWORK=celestia
 export NODE_TYPE=light
 export RPC_URL=rpc.celestia.pops.one
 
-# Create a directory for persistent storage
+# Create a dedicated user and group for Celestia node
 echo "===================================================="
 echo ""
-echo "Creating directory for persistent storage..."
+echo "Creating user and group for Celestia node..."
 echo "===================================================="
 echo ""
-mkdir -p $HOME/celestia-node
-sudo chown 10001:10001 $HOME/celestia-node
+sudo groupadd celestia
+sudo useradd -g celestia celestia
+sudo mkdir -p /home/celestia/celestia-node
+sudo chown celestia:celestia /home/celestia/celestia-node
 
-# Initialize the node store and key, and save output to a file
+# Initialize the node store and key
 echo "===================================================="
 echo ""
 echo "Initializing the node store and key..."
 echo "===================================================="
 echo ""
-docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
-  -v $HOME/celestia-node:/home/celestia \
+sudo -u celestia docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
+  -v /home/celestia/celestia-node:/home/celestia \
   ghcr.io/celestiaorg/celestia-node:v0.17.2 \
-  celestia light init --p2p.network $NETWORK > $HOME/celestia-node/init_output.txt
-
-# Extract key information and save to a backup file
-echo "===================================================="
-echo ""
-echo "Saving key information to backup file..."
-echo "===================================================="
-echo ""
-grep -E 'NAME|ADDRESS|MNEMONIC' $HOME/celestia-node/init_output.txt > $HOME/backup_account.txt
+  celestia light init --p2p.network $NETWORK
 
 # Start the node
 echo "===================================================="
@@ -107,8 +101,8 @@ echo ""
 echo "Starting the Celestia Light Node..."
 echo "===================================================="
 echo ""
-docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
-  -v $HOME/celestia-node:/home/celestia \
+sudo -u celestia docker run -e NODE_TYPE=$NODE_TYPE -e P2P_NETWORK=$NETWORK \
+  -v /home/celestia/celestia-node:/home/celestia \
   ghcr.io/celestiaorg/celestia-node:v0.17.2 \
   celestia light start --core.ip $RPC_URL --p2p.network $NETWORK
 
